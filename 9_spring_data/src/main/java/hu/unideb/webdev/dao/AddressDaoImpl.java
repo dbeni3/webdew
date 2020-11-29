@@ -58,7 +58,7 @@ public class AddressDaoImpl implements AddressDao{
                 .filter(entity -> entity.getCountry().getName().equals(country))
                 .findFirst();
         if(!cityEntity.isPresent()){
-            Optional<CountryEntity> countryEntity = countryRepository.findByName(country);
+            Optional<CountryEntity> countryEntity = Optional.ofNullable(countryRepository.findByName(country));
             if(!countryEntity.isPresent()){
                 throw new UnknownCountryException(country);
             }
