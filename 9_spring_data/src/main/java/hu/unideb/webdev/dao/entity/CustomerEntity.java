@@ -35,7 +35,7 @@ public class CustomerEntity {
     private  AddressEntity address;
 
     @Column(name ="active")
-    private int active;
+    private String active;
 
     @Column(name ="create_date")
     private Timestamp createDate;

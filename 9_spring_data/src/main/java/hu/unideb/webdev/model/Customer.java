@@ -5,6 +5,8 @@ import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.ToString;
 
+import static java.lang.Integer.parseInt;
+
 @AllArgsConstructor
 @ToString
 @Getter
@@ -16,4 +18,8 @@ public class Customer {
     private String email;
     private String adress;
     private String active;
+    private String createDate;
+
+
+
 }
