@@ -1,9 +1,7 @@
 package hu.unideb.webdev.dao;
 
-import hu.unideb.webdev.exceptions.UnknownAddressException;
-import hu.unideb.webdev.exceptions.UnknownCountryException;
-import hu.unideb.webdev.model.Staff;
 
+import hu.unideb.webdev.model.Staff;
 
 import java.util.Collection;
 
@@ -15,11 +13,12 @@ import java.util.Collection;
  *  - Read
  *  - Update
  *  - Delete
+ *  Exeption!!
  */
 public interface StaffDao {
 
-    void createStaff(Staff staff)  throws UnknownCountryException;
+    void createStaff(Staff staff)  ;
     Collection<Staff> readAll();
 
-    void deleteStaff(Staff staff) throws UnknownAddressException;
+    void deleteStaff(Staff staff);
 }

@@ -15,6 +15,11 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 
+/**
+ * Még exeptionkezelés és teszt kell hozzá
+ *
+ *
+ */
 @Service
 @Slf4j
 @RequiredArgsConstructor

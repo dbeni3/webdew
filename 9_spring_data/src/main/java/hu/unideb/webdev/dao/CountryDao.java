@@ -1,7 +1,6 @@
 package hu.unideb.webdev.dao;
 
-import hu.unideb.webdev.exceptions.UnknownAddressException;
-import hu.unideb.webdev.exceptions.UnknownCountryException;
+
 
 import hu.unideb.webdev.model.Country;
 
@@ -15,11 +14,13 @@ import java.util.Collection;
  *  - Read
  *  - Update
  *  - Delete
+ *
+ *  exeption kezelés
  */
 public interface CountryDao {
 
-    void createCountry(Country country)  throws UnknownCountryException;
+    void createCountry(Country country) ;
     Collection<Country> readAll();
 
-    void deleteCountry(Country country) throws UnknownAddressException;
+    void deleteCountry(Country country) ;
 }

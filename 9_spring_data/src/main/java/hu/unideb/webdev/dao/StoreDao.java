@@ -15,11 +15,13 @@ import java.util.Collection;
  *  - Read
  *  - Update
  *  - Delete
+ *
+ *  Exeption
  */
 public interface StoreDao {
 
-    void createStore(Store store)  throws UnknownCountryException;
+    void createStore(Store store)  ;
     Collection<Store> readAll();
 
-    void deleteStore(Store store) throws UnknownAddressException;
+    void deleteStore(Store store) ;
 }
