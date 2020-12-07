@@ -19,12 +19,12 @@ public class StoreEntity {
     @Column(name = "store_id")
     private int id;
 
-    @OneToOne
+    @OneToOne(cascade = CascadeType.REMOVE)
     @JoinColumn(name ="address_id")
-    private AddressEntity adress;
+    private AddressEntity address;
 
 
-    @OneToOne(mappedBy = "store")
+    @OneToOne(cascade = CascadeType.REMOVE)
     @JoinColumn(name="manager_staff_id")
     private StaffEntity staff;
 

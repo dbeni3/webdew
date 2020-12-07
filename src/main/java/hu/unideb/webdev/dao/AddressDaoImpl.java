@@ -88,17 +88,32 @@ public class AddressDaoImpl implements AddressDao{
                 ))
                 .collect(Collectors.toList());
     }
+    @Override
+    public Collection<Address> getAddressByAddress(String address) {
+        return StreamSupport.stream(addressRepository.findByAddress(address).spliterator(),false)
+                .map(entity -> new Address(
+                        entity.getAddress(),
+                        entity.getAddress2(),
+                        entity.getDistrict(),
+                        entity.getCity().getName(),
+                        entity.getCity().getCountry().getName(),
+                        entity.getPostalCode(),
+                        entity.getPhone()
+                ))
+                .collect(Collectors.toList());
+    }
 
     @Override
     public void deleteAddress(Address address) throws UnknownAddressException {
         Optional<AddressEntity> addressEntity = StreamSupport.stream(addressRepository.findAll().spliterator(),false).filter(
-                entity ->{
-                    return address.getAddress().equals(entity.getAddress())  &&
+                entity -> {
+                    return
+                    address.getAddress().equals(entity.getAddress()) &&
                     address.getAddress2().equals(entity.getAddress2()) &&
                     address.getDistrict().equals(entity.getDistrict()) &&
                     address.getCity().equals(entity.getCity().getName()) &&
                     address.getCountry().equals(entity.getCity().getCountry().getName());
-                }
+        }
         ).findAny();
         if(!addressEntity.isPresent()){
             throw new UnknownAddressException(String.format("Address Not Found %s",address), address);

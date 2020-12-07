@@ -1,7 +1,9 @@
 package hu.unideb.webdev.controller;
 
 import hu.unideb.webdev.controller.dto.AddressDto;
+import hu.unideb.webdev.controller.dto.AddressRecordRequestAddressDto;
 import hu.unideb.webdev.controller.dto.AddressRecordRequestDto;
+import hu.unideb.webdev.exceptions.UnknownAddressException;
 import hu.unideb.webdev.exceptions.UnknownCountryException;
 import hu.unideb.webdev.model.Address;
 import hu.unideb.webdev.service.AddressService;
@@ -36,6 +38,20 @@ public class AddressController {
                 .collect(Collectors.toList());
     }
 
+    @GetMapping("/addressByAddress")
+    public Collection<AddressDto> listAddressesByAddress(@RequestBody AddressRecordRequestAddressDto requestDto){
+        return service.getAddressByAddress(requestDto.getAddress())
+                .stream()
+                .map(model -> AddressDto.builder()
+                        .address(model.getAddress())
+                        .address2(model.getAddress2())
+                        .district(model.getDistrict())
+                        .city(model.getCity())
+                        .country(model.getCountry())
+                        .build())
+                .collect(Collectors.toList());
+    }
+
 
     @PostMapping("/address")
     public void record(@RequestBody AddressRecordRequestDto requestDto) {
@@ -50,6 +66,22 @@ public class AddressController {
                     requestDto.getPhone()
             ));
         } catch (UnknownCountryException e) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, e.getMessage());
+        }
+    }
+    @DeleteMapping("/address")
+    public void deleteAddress(@RequestBody AddressRecordRequestDto requestDto){
+        try {
+            service.deleteAddress(new Address(
+                    requestDto.getAddress(),
+                    requestDto.getAddress2(),
+                    requestDto.getDistrict(),
+                    requestDto.getCity(),
+                    requestDto.getCountry(),
+                    requestDto.getPostalCode(),
+                    requestDto.getPhone()
+            ));
+        } catch (UnknownAddressException e) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, e.getMessage());
         }
     }

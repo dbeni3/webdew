@@ -44,7 +44,6 @@ public class StaffController {
     @PostMapping("/staff")
     public void record(@RequestBody StaffRecordRequestDto requestDto) throws UnknownCountryException, UnknownStoreException {
         service.recordStaff(new Staff(
-                requestDto.getStoreAddress(),
                 requestDto.getFirstName(),
                 requestDto.getLastName(),
                 requestDto.getAddress(),
@@ -54,10 +53,7 @@ public class StaffController {
                 requestDto.getActive(),
                 requestDto.getCity(),
                 requestDto.getCountry(),
-                requestDto.getStoreCity(),
-                requestDto.getStoreCountry()
+                requestDto.getStoreId()
         ));
-
-
     }
 }

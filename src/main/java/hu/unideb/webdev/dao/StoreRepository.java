@@ -11,5 +11,5 @@ import java.util.Optional;
 
 public interface StoreRepository extends CrudRepository<StoreEntity, Integer> {
     Collection<StoreEntity> findById(int id);
-    Collection<StoreEntity> findByAdress_Id(int id);
+    Collection<StoreEntity> findByAddress_Id(int id);
 }

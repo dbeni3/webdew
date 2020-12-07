@@ -12,6 +12,6 @@ import lombok.experimental.SuperBuilder;
 public class StaffRecordRequestDto extends StaffDto{
     private String city;
     private String country;
-    private String storeCity;
-    private String storeCountry;
+    private int storeId;
+
 }

@@ -1,6 +1,8 @@
 package hu.unideb.webdev.dao.entity;
 
 import lombok.*;
+import org.hibernate.annotations.Cascade;
+import org.hibernate.annotations.OnDelete;
 
 import javax.persistence.*;
 import java.sql.Timestamp;
@@ -17,7 +19,7 @@ public class CustomerEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "customer_id")
     private int id;
-    @ManyToOne
+    @ManyToOne(cascade = CascadeType.REMOVE)
     @JoinColumn(name="store_id")
     private StoreEntity store;
 
@@ -30,7 +32,7 @@ public class CustomerEntity {
     @Column(name ="email")
     private String email;
 
-    @ManyToOne
+    @ManyToOne(cascade = CascadeType.REMOVE)
     @JoinColumn(name ="address_id")
     private  AddressEntity address;
 

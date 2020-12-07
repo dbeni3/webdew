@@ -1,6 +1,7 @@
 package hu.unideb.webdev.dao.entity;
 
 import lombok.*;
+import org.hibernate.annotations.Cascade;
 import org.locationtech.jts.geom.Point;
 
 import javax.persistence.*;
@@ -13,6 +14,7 @@ import java.sql.Timestamp;
 @ToString
 @Entity
 @Table(name = "address", schema = "sakila")
+
 public class AddressEntity {
 
     @Id
@@ -29,7 +31,7 @@ public class AddressEntity {
     @Column
     private String district;
 
-    @ManyToOne
+    @ManyToOne(cascade = CascadeType.REMOVE)
     @JoinColumn(name="city_id")
     private CityEntity city;
 

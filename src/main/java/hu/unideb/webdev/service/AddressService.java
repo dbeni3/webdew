@@ -10,6 +10,7 @@ public interface AddressService {
 
     Collection<Address> getAllAddress();
     Collection<Address> getAddressInCity(String city);
+    Collection<Address> getAddressByAddress(String address);
 
     void recordAddress(Address address) throws UnknownCountryException;
     void deleteAddress(Address address) throws UnknownAddressException;

@@ -1,10 +1,13 @@
 package hu.unideb.webdev.dao.entity;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import lombok.*;
 
 import javax.persistence.*;
 import java.sql.Timestamp;
+import java.util.Set;
 
 @Data
 @Builder
@@ -25,9 +28,8 @@ public class StaffEntity {
     @Column(name ="last_name")
     private String lastName;
 
-    @OneToOne
+    @OneToOne(cascade = CascadeType.REMOVE)
     @JoinColumn(name ="address_id")
-
     private  AddressEntity address;
 
     @Lob
@@ -38,9 +40,8 @@ public class StaffEntity {
     private String email;
 
 
-    @OneToOne
-    @JoinColumn(name ="store_id")
-    private  StoreEntity store;
+    @OneToOne(cascade = CascadeType.REMOVE)
+    private StoreEntity store;
 
     @Column(name ="active")
     private String active;

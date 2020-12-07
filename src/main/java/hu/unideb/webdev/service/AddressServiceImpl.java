@@ -29,6 +29,10 @@ public class AddressServiceImpl implements AddressService{
                 .filter(address -> city.equals(address.getCity()))
                 .collect(Collectors.toList());
     }
+    @Override
+    public Collection<Address> getAddressByAddress(String address){
+        return addressDao.getAddressByAddress(address);
+    }
 
     @Override
     public void recordAddress(Address address) throws UnknownCountryException {

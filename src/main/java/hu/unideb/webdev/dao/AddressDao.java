@@ -17,7 +17,7 @@ import java.util.Collection;
  */
 
 public interface AddressDao {
-
+    Collection<Address> getAddressByAddress(String address);
     void createAddress(Address address) throws UnknownCountryException;
     Collection<Address> readAll();
 

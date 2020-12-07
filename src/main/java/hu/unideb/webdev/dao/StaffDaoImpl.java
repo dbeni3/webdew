@@ -35,7 +35,6 @@ public class StaffDaoImpl implements StaffDao {
     public Collection<Staff> readAll() {
         return StreamSupport.stream(staffRepository.findAll().spliterator(),false)
                 .map(entity -> new Staff(
-                        entity.getStore().getAdress().getAddress(),
                         entity.getFirstName(),
                         entity.getLastName(),
                         entity.getAddress().getAddress(),
@@ -45,11 +44,11 @@ public class StaffDaoImpl implements StaffDao {
                         entity.getActive(),
                         entity.getAddress().getCity().getName(),
                         entity.getAddress().getCity().getCountry().getName(),
-                        entity.getStore().getAdress().getCity().getName(),
-                        entity.getStore().getAdress().getCity().getCountry().getName()
+                        entity.getStore().getId()
                 ))
                 .collect(Collectors.toList());
     }
+
 
     @Override
     public void createStaff(Staff staff) throws UnknownCountryException, UnknownStoreException {
@@ -60,7 +59,7 @@ public class StaffDaoImpl implements StaffDao {
                 .lastName(staff.getLastName())
                 .address(queryAddress(staff.getAddress(),queryCity(staff.getCity(),staff.getCountry())))
                 .email(staff.getEmail())
-                .store(queryStore(queryAddress(staff.getStoreAddress(),queryCity(staff.getStoreCity(),staff.getStoreCountry()))))
+                .store(queryStore(staff.getStoreId()))
                 .active(staff.getActive())
                 .userName(staff.getUsername())
                 .passWord(staff.getPassword())
@@ -75,11 +74,11 @@ public class StaffDaoImpl implements StaffDao {
         }
     }
 
-    protected  StoreEntity queryStore(AddressEntity addressEntity) throws UnknownStoreException {
-        Optional<StoreEntity> storeEntity = storeRepository.findByAdress_Id(addressEntity.getId()).stream()
+    protected  StoreEntity queryStore(int storeId) throws UnknownStoreException {
+        Optional<StoreEntity> storeEntity = storeRepository.findById(storeId).stream()
                 .findFirst();
         if (!storeEntity.isPresent()){
-            throw new UnknownStoreException(addressEntity.getAddress());
+            throw new UnknownStoreException(storeEntity.get().getAddress().getAddress());
         }
         return storeEntity.get();
     }
