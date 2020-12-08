@@ -1,8 +1,6 @@
 package hu.unideb.webdev.dao.entity;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonManagedReference;
+import com.fasterxml.jackson.annotation.*;
 import lombok.*;
 
 import javax.persistence.*;
@@ -14,6 +12,7 @@ import java.util.Set;
 @AllArgsConstructor
 @NoArgsConstructor
 @ToString
+@JsonIdentityInfo(generator = ObjectIdGenerators.UUIDGenerator.class)
 @Entity
 @Table(name = "staff", schema = "sakila")
 public class StaffEntity {
@@ -28,7 +27,7 @@ public class StaffEntity {
     @Column(name ="last_name")
     private String lastName;
 
-    @OneToOne(cascade = CascadeType.ALL)
+    @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name ="address_id")
     private  AddressEntity address;
 
@@ -40,8 +39,9 @@ public class StaffEntity {
     private String email;
 
 
-    @OneToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name="staff")
+
+    @OneToOne(cascade = CascadeType.ALL,fetch = FetchType.LAZY,targetEntity = StoreEntity.class)
+    @JoinColumn(name ="store_id")
     private StoreEntity store;
 
     @Column(name ="active")

@@ -15,7 +15,7 @@ import java.util.Collection;
  *  - Update
  *  - Delete
  *
- *  exeption kezelés
+ *
  */
 public interface CountryDao {
 

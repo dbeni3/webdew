@@ -10,10 +10,7 @@ import hu.unideb.webdev.service.CountryService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.util.Collection;
@@ -40,4 +37,11 @@ public class CountryController {
     public void record(@RequestBody CountryDto dto) {
         service.recordCountry(new Country(dto.getName()));
     }
+
+    @DeleteMapping
+    public void deleteCity(@RequestBody CountryDto countryDto){
+        service.deleteCountry(new Country(countryDto.getName()));
+    }
+
+
 }

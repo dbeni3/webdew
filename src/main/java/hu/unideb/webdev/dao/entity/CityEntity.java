@@ -23,7 +23,7 @@ public class CityEntity {
     @Column(name="city")
     private String name;
 
-    @ManyToOne(cascade = CascadeType.REMOVE)
+    @ManyToOne(fetch = FetchType.LAZY,cascade = CascadeType.ALL)
     @JoinColumn(name = "country_id")
     private CountryEntity country;
 

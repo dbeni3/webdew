@@ -31,7 +31,7 @@ public class AddressEntity {
     @Column
     private String district;
 
-    @ManyToOne(cascade = CascadeType.REMOVE)
+    @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name="city_id")
     private CityEntity city;
 

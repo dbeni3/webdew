@@ -1,8 +1,11 @@
 package hu.unideb.webdev.dao;
 
 
+import hu.unideb.webdev.dao.entity.AddressEntity;
 import hu.unideb.webdev.dao.entity.CityEntity;
 import hu.unideb.webdev.exceptions.UnknownAddressException;
+import hu.unideb.webdev.exceptions.UnknownCityException;
+import hu.unideb.webdev.model.Address;
 import hu.unideb.webdev.model.City;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -18,12 +21,12 @@ import java.util.stream.StreamSupport;
 @Service
 @Slf4j
 @RequiredArgsConstructor
-public class CityDaoImpl implements CityDao{
+public class CityDaoImpl implements CityDao {
     private final CityRepository cityRepository;
     private final CountryRepository countryRepository;
 
     @Override
-    public void createCity(City city)  {
+    public void createCity(City city) {
         CityEntity cityEntity;
 
         cityEntity = CityEntity.builder()
@@ -34,37 +37,16 @@ public class CityDaoImpl implements CityDao{
         log.info("CityEntity: {}", cityEntity);
         try {
             cityRepository.save(cityEntity);
-        }
-        catch(Exception e){
+        } catch (Exception e) {
             log.error(e.getMessage());
         }
     }
 
-   /* protected CountryEntity queryCountry(String country) throws UnknownCountryException {
 
-        Optional<CityEntity> cityEntity = cityRepository.findByName(city).stream()
-                .filter(entity -> entity.getCountry().getName().equals(country))
-                .findFirst();
-        if(!cityEntity.isPresent()){
-            Optional<CountryEntity> countryEntity = countryRepository.findByName(country);
-            if(!countryEntity.isPresent()){
-                throw new UnknownCountryException(country);
-            }
-            cityEntity = Optional.ofNullable(CityEntity.builder()
-                    .name(city)
-                    .country(countryEntity.get())
-                    .lastUpdate(new Timestamp((new Date()).getTime()))
-                    .build());
-            cityRepository.save(cityEntity.get());
-            log.info("Recorded new City: {}, {}", city, country);
-        }
-        log.trace("City Entity: {}", cityEntity);
-        return cityEntity.get();
-    }*/
 
     @Override
     public Collection<City> readAll() {
-        return StreamSupport.stream(cityRepository.findAll().spliterator(),false)
+        return StreamSupport.stream(cityRepository.findAll().spliterator(), false)
                 .map(entity -> new City(
                         entity.getName(),
                         entity.getCountry().getName()
@@ -73,22 +55,20 @@ public class CityDaoImpl implements CityDao{
     }
 
     @Override
-    public void deleteCity(City city)  {
-        Optional<CityEntity> cityEntity = StreamSupport.stream(cityRepository.findAll().spliterator(),false).filter(
-                entity ->{
-                    return city.getName().equals(entity.getName())  &&
-                            city.getCountry().equals(entity.getCountry());
+    public void deleteCity(City city) throws UnknownCityException {
+
+        Optional<CityEntity> cityEntity = StreamSupport.stream(cityRepository.findAll().spliterator(), false).filter(
+                entity -> {
+                    return city.getName().equals(entity.getName()) &&
+                            city.getCountry().equals(entity.getCountry().getName());
                 }
         ).findAny();
-        if(!cityEntity.isPresent()){
-            try {
-                throw new Exception();
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
+
+        System.out.println(cityEntity.get().getName());
+        if (!cityEntity.isPresent()) {
+            throw new UnknownCityException(String.format("City Not Found %s", city), city);
         }
+
         cityRepository.delete(cityEntity.get());
     }
-
-
 }

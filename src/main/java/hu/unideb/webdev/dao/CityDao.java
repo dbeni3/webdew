@@ -1,6 +1,7 @@
 package hu.unideb.webdev.dao;
 
 import hu.unideb.webdev.exceptions.UnknownAddressException;
+import hu.unideb.webdev.exceptions.UnknownCityException;
 import hu.unideb.webdev.exceptions.UnknownCountryException;
 import hu.unideb.webdev.model.City;
 
@@ -20,5 +21,5 @@ public interface CityDao {
     void createCity(City city)  ;
     Collection<City> readAll();
 
-    void deleteCity(City city) ;
+    void deleteCity(City city) throws UnknownCityException;
 }

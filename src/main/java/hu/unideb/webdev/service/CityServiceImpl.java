@@ -1,6 +1,7 @@
 package hu.unideb.webdev.service;
 
 import hu.unideb.webdev.dao.CityDao;
+import hu.unideb.webdev.exceptions.UnknownCityException;
 import hu.unideb.webdev.model.City;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -28,7 +29,7 @@ public class CityServiceImpl implements CityService {
     }
 
     @Override
-    public void deleteCity(City city)  {
+    public void deleteCity(City city) throws UnknownCityException {
         cityDao.deleteCity(city);
     }
 }

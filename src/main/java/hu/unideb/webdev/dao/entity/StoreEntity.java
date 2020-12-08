@@ -1,5 +1,6 @@
 package hu.unideb.webdev.dao.entity;
 
+import com.fasterxml.jackson.annotation.*;
 import lombok.*;
 
 import javax.persistence.*;
@@ -11,6 +12,7 @@ import java.sql.Timestamp;
 @AllArgsConstructor
 @NoArgsConstructor
 @ToString
+@JsonIdentityInfo(generator = ObjectIdGenerators.UUIDGenerator.class)
 @Entity
 @Table(name = "store", schema = "sakila")
 public class StoreEntity {
@@ -19,13 +21,14 @@ public class StoreEntity {
     @Column(name = "store_id")
     private int id;
 
-    @OneToOne(cascade = CascadeType.REMOVE)
+    @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name ="address_id")
     private AddressEntity address;
 
+    //@JsonIgnore
+    @OneToOne(cascade = CascadeType.ALL,targetEntity = StaffEntity.class,mappedBy = "store",fetch = FetchType.LAZY)
+    @JoinColumn(name = "staff_id")
 
-    @OneToOne(mappedBy = "store",cascade = CascadeType.ALL)
-    @JoinColumn(name = "store")
     private StaffEntity staff;
 
     @Column(name ="last_update")

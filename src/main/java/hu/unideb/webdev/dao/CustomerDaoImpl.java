@@ -54,13 +54,12 @@ public class CustomerDaoImpl implements CustomerDao{
 
 
     protected StoreEntity queryStore(int storeId) throws UnknownStoreException {
-        System.out.println(storeId);
         Optional<StoreEntity> storeEntity= storeRepository.findById(storeId).stream()
                 .findFirst();
         if (!storeEntity.isPresent()){
             throw new UnknownStoreException(""+storeId);
         }
-        System.out.println(storeEntity.get().getId());
+
         return storeEntity.get();
     }
 

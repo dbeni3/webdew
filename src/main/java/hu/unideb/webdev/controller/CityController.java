@@ -3,6 +3,8 @@ package hu.unideb.webdev.controller;
 import hu.unideb.webdev.controller.dto.AddressDto;
 import hu.unideb.webdev.controller.dto.AddressRecordRequestDto;
 import hu.unideb.webdev.controller.dto.CityDto;
+import hu.unideb.webdev.exceptions.UnknownAddressException;
+import hu.unideb.webdev.exceptions.UnknownCityException;
 import hu.unideb.webdev.exceptions.UnknownCountryException;
 import hu.unideb.webdev.model.Address;
 import hu.unideb.webdev.model.City;
@@ -10,10 +12,7 @@ import hu.unideb.webdev.service.CityService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.util.Collection;
@@ -41,6 +40,14 @@ public class CityController {
         service.recordCity(new City(
                 requestDto.getName(),
                 requestDto.getCountry()
+        ));
+    }
+
+    @DeleteMapping("/city")
+    public void deleteCity(@RequestBody CityDto cityDto) throws UnknownCityException {
+        service.deleteCity(new City(
+                cityDto.getName(),
+                cityDto.getCountry()
         ));
     }
 }

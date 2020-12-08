@@ -1,5 +1,6 @@
 package hu.unideb.webdev.dao.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.*;
 import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.OnDelete;
@@ -19,7 +20,8 @@ public class CustomerEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "customer_id")
     private int id;
-    @ManyToOne(cascade = CascadeType.REMOVE)
+
+    @ManyToOne(cascade = CascadeType.REMOVE,fetch = FetchType.LAZY)
     @JoinColumn(name="store_id")
     private StoreEntity store;
 
@@ -32,7 +34,7 @@ public class CustomerEntity {
     @Column(name ="email")
     private String email;
 
-    @ManyToOne(cascade = CascadeType.REMOVE)
+    @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name ="address_id")
     private  AddressEntity address;
 
