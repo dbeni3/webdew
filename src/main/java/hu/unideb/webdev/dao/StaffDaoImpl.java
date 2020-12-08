@@ -3,14 +3,9 @@ package hu.unideb.webdev.dao;
 import hu.unideb.webdev.dao.entity.*;
 import hu.unideb.webdev.exceptions.UnknownCountryException;
 import hu.unideb.webdev.exceptions.UnknownStoreException;
-import hu.unideb.webdev.model.Address;
-import hu.unideb.webdev.model.Customer;
 import hu.unideb.webdev.model.Staff;
-import hu.unideb.webdev.model.Store;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.locationtech.jts.geom.Coordinate;
-import org.locationtech.jts.geom.GeometryFactory;
 import org.springframework.stereotype.Service;
 
 import java.sql.Timestamp;

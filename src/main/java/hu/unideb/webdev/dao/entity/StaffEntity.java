@@ -28,7 +28,7 @@ public class StaffEntity {
     @Column(name ="last_name")
     private String lastName;
 
-    @OneToOne(cascade = CascadeType.REMOVE)
+    @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name ="address_id")
     private  AddressEntity address;
 
@@ -40,7 +40,8 @@ public class StaffEntity {
     private String email;
 
 
-    @OneToOne(cascade = CascadeType.REMOVE)
+    @OneToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name="staff")
     private StoreEntity store;
 
     @Column(name ="active")

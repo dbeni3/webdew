@@ -58,9 +58,8 @@ then
     done
     printf "Successfull Connection\n"
     printf "Importing Data...\n"
-
-    docker exec $CONTAINER_NAME sh -c "mysql -u root -p$ROOT_PASSWORD < $MYSQL_HOME/sakila-schema.sql 2>/dev/null"
-    docker exec $CONTAINER_NAME sh -c "mysql -u root -p$ROOT_PASSWORD < $MYSQL_HOME/sakila-data.sql 2>/dev/null"
+    
+    docker exec $CONTAINER_NAME sh -c "mysql -u root -p$ROOT_PASSWORD < $MYSQL_HOME/sakila-customer-dump.sql 2>/dev/null"
 
     printf "Data was imported!\n"
 

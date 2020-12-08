@@ -3,10 +3,7 @@ package hu.unideb.webdev.dao;
 
 import hu.unideb.webdev.dao.entity.*;
 import hu.unideb.webdev.exceptions.UnknownAddressException;
-import hu.unideb.webdev.exceptions.UnknownCountryException;
 import hu.unideb.webdev.exceptions.UnknownStaffException;
-import hu.unideb.webdev.exceptions.UnknownStoreException;
-import hu.unideb.webdev.model.Staff;
 import hu.unideb.webdev.model.Store;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

@@ -1,10 +1,10 @@
 package hu.unideb.webdev.dao.entity;
-import com.fasterxml.jackson.annotation.JsonBackReference;
+
 import lombok.*;
 
 import javax.persistence.*;
 import java.sql.Timestamp;
-import java.util.List;
+
 
 @Data
 @Builder
@@ -24,8 +24,8 @@ public class StoreEntity {
     private AddressEntity address;
 
 
-    @OneToOne(cascade = CascadeType.REMOVE)
-    @JoinColumn(name="manager_staff_id")
+    @OneToOne(mappedBy = "store",cascade = CascadeType.ALL)
+    @JoinColumn(name = "store")
     private StaffEntity staff;
 
     @Column(name ="last_update")
