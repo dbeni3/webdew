@@ -9,9 +9,9 @@ import lombok.experimental.SuperBuilder;
 @SuperBuilder
 @NoArgsConstructor
 @AllArgsConstructor
-public class StaffRecordRequestDto extends StaffDto{
-    private String city;
-    private String country;
+public class StaffRecordRequestDto extends StaffDto  {
+    private int staffAddressId;
+    private int storeAddressId;
+    private int staffId;
     private int storeId;
-
 }

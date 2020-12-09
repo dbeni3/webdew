@@ -1,13 +1,16 @@
 package hu.unideb.webdev.dao;
 
 import hu.unideb.webdev.dao.entity.*;
-import hu.unideb.webdev.exceptions.UnknownCountryException;
-import hu.unideb.webdev.exceptions.UnknownStoreException;
+import hu.unideb.webdev.exceptions.*;
+import hu.unideb.webdev.model.Address;
+import hu.unideb.webdev.model.Customer;
 import hu.unideb.webdev.model.Staff;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
+import javax.persistence.EntityManager;
 import java.sql.Timestamp;
 import java.util.Collection;
 import java.util.Date;
@@ -21,15 +24,18 @@ import java.util.stream.StreamSupport;
 public class StaffDaoImpl implements StaffDao {
 
     private final StaffRepository staffRepository;
+    private final StoreRepository storeRepository;
     private final CountryRepository countryRepository;
     private final CityRepository cityRepository;
     private final AddressRepository addressRepository;
-    private final StoreRepository storeRepository;
+    private final EntityManager entityManager;
 
     @Override
     public Collection<Staff> readAll() {
         return StreamSupport.stream(staffRepository.findAll().spliterator(),false)
                 .map(entity -> new Staff(
+                        entity.getStore().getId(),
+                        entity.getId(),
                         entity.getFirstName(),
                         entity.getLastName(),
                         entity.getAddress().getAddress(),
@@ -37,88 +43,105 @@ public class StaffDaoImpl implements StaffDao {
                         entity.getUserName(),
                         entity.getPassWord(),
                         entity.getActive(),
-                        entity.getAddress().getCity().getName(),
-                        entity.getAddress().getCity().getCountry().getName(),
+                        entity.getAddress().getId(),
                         entity.getStore().getId()
                 ))
                 .collect(Collectors.toList());
     }
 
-
     @Override
-    public void createStaff(Staff staff) throws UnknownCountryException, UnknownStoreException {
-        StaffEntity staffEntity;
+    public void createStaff(Staff staff) throws  UnknownAddressException {
+        StoreEntity store=createStore(staff.getStoreAddressId());
 
+
+        StaffEntity staffEntity;
         staffEntity = StaffEntity.builder()
                 .firstName(staff.getFirstName())
                 .lastName(staff.getLastName())
-                .address(queryAddress(staff.getAddress(),queryCity(staff.getCity(),staff.getCountry())))
+                .address(queryAddress(staff.getStaffAddressId()))
                 .email(staff.getEmail())
-                .store(queryStore(staff.getStoreId()))
                 .active(staff.getActive())
                 .userName(staff.getUsername())
                 .passWord(staff.getPassword())
                 .lastUpdate(new Timestamp((new Date()).getTime()))
                 .build();
-        log.info("StaffEntity: {}", staffEntity);
+        store.setStaff(staffEntity);
+        staffEntity.setStore(store);
+        try {
+            storeRepository.save(store);
+        }
+        catch(Exception e){
+            log.error(e.getMessage());
+        }
         try {
             staffRepository.save(staffEntity);
         }
         catch(Exception e){
             log.error(e.getMessage());
         }
-    }
+        log.info("StaffEntity: {}", staffEntity);
 
-    protected  StoreEntity queryStore(int storeId) throws UnknownStoreException {
-        Optional<StoreEntity> storeEntity = storeRepository.findById(storeId).stream()
-                .findFirst();
-        if (!storeEntity.isPresent()){
-            throw new UnknownStoreException(storeEntity.get().getAddress().getAddress());
+
+    }
+    protected StoreEntity createStore(int storeAddressId) throws UnknownAddressException {
+        StoreEntity storeEntity=new StoreEntity();
+        storeEntity.setAddress(queryAddress(storeAddressId));
+        storeEntity.setLastUpdate(new Timestamp((new Date()).getTime()));
+
+
+        return storeEntity;
+    }
+    protected StoreEntity queryStore(int storeId) throws UnknownStoreException {
+        if (storeId<1){
+            throw new UnknownStoreException("Store must be greater than 0");
         }
-        return storeEntity.get();
+        StoreEntity storeEntity = entityManager.find(StoreEntity.class,storeId);
+        return storeEntity;
     }
+    protected AddressEntity queryAddress(int addressId) throws  UnknownAddressException {
 
-
-    protected CityEntity queryCity(String city, String country) throws UnknownCountryException {
-
-        Optional<CityEntity> cityEntity = cityRepository.findByName(city).stream()
-                .filter(entity -> entity.getCountry().getName().equals(country))
-                .findFirst();
-        if(!cityEntity.isPresent()){
-            Optional<CountryEntity> countryEntity = Optional.ofNullable(countryRepository.findByName(country));
-            if(!countryEntity.isPresent()){
-                throw new UnknownCountryException(country);
-            }
-            cityEntity = Optional.ofNullable(CityEntity.builder()
-                    .name(city)
-                    .country(countryEntity.get())
-                    .lastUpdate(new Timestamp((new Date()).getTime()))
-                    .build());
-            cityRepository.save(cityEntity.get());
-            log.info("Recorded new City: {}, {}", city, country);
-        }
-        log.trace("City Entity: {}", cityEntity);
-        return cityEntity.get();
-    }
-
-    protected AddressEntity queryAddress(String address ,CityEntity cityEntity) throws UnknownCountryException {
-
-        Optional<AddressEntity> addressEntity = addressRepository.findByAddress(address).stream()
-                .filter(entity -> entity.getAddress().equals(address))
+        Optional<AddressEntity> addressEntity = addressRepository.findById(addressId).stream()
                 .findFirst();
 
         if(!addressEntity.isPresent()){
-
-            addressEntity = Optional.ofNullable(AddressEntity.builder()
-                    .address(address)
-                    .city(cityEntity)
-                    .lastUpdate(new Timestamp((new Date()).getTime()))
-                    .build());
-            addressRepository.save(addressEntity.get());
-            log.info("Recorded new Addres: {}, {}", cityEntity.getName(), address);
+            throw new UnknownAddressException("AddressEntity not found");
         }
         log.trace("Addres Entity: {}", addressEntity);
 
         return addressEntity.get();
+    }
+    @Override
+    public void updateStaff(Staff staff) throws UnknownStaffException, UnknownAddressException, UnknownStoreException {
+        Optional<StaffEntity> staffEntity=staffRepository.findById(staff.getStaffId());
+        if (!staffEntity.isPresent()){
+            throw new UnknownStaffException(String.format("Staff Not Found %s",staff), staff);
+        }
+
+        if (!staff.getFirstName().equals("string")){
+            staffEntity.get().setFirstName(staff.getFirstName());
+        }
+        if (!staff.getLastName().equals("string")){
+            staffEntity.get().setLastName(staff.getLastName());
+        }
+        if (!staff.getEmail().equals("string")){
+            staffEntity.get().setEmail(staff.getEmail());
+        }
+        if (!staff.getUsername().equals("string")){
+            staffEntity.get().setUserName(staff.getUsername());
+        }
+        if (!staff.getPassword().equals("string")){
+            staffEntity.get().setPassWord(staff.getPassword());
+        }
+        if (staff.getStaffAddressId()!=(staffEntity.get().getAddress().getId())){
+            staffEntity.get().setAddress(queryAddress(staff.getStaffAddressId()));
+        }
+
+        if (staff.getStoreId()!=staffEntity.get().getStore().getId()){
+            staffEntity.get().setStore(queryStore(staff.getStoreId()));
+        }
+
+        staffEntity.get().setLastUpdate(new Timestamp((new Date()).getTime()));
+
+        staffRepository.save(staffEntity.get());
     }
 }

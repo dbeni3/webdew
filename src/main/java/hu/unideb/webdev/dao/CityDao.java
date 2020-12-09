@@ -20,6 +20,6 @@ public interface CityDao {
 
     void createCity(City city)  ;
     Collection<City> readAll();
-
+    void updateCity(City city) throws UnknownCityException, UnknownCountryException;
     void deleteCity(City city) throws UnknownCityException;
 }

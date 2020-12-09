@@ -2,6 +2,7 @@ package hu.unideb.webdev.service;
 
 
 import hu.unideb.webdev.dao.CountryDao;
+import hu.unideb.webdev.exceptions.UnknownCountryException;
 import hu.unideb.webdev.model.Country;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -31,4 +32,8 @@ public class CountryServiceImpl implements CountryService{
         countryDao.deleteCountry(country);
     }
 
+    @Override
+    public void updateCountry(Country country) throws UnknownCountryException {
+        countryDao.updateCountry(country);
+    }
 }

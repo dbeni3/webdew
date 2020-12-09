@@ -1,7 +1,9 @@
 package hu.unideb.webdev.service;
 
 import hu.unideb.webdev.dao.StaffDao;
+import hu.unideb.webdev.exceptions.UnknownAddressException;
 import hu.unideb.webdev.exceptions.UnknownCountryException;
+import hu.unideb.webdev.exceptions.UnknownStaffException;
 import hu.unideb.webdev.exceptions.UnknownStoreException;
 import hu.unideb.webdev.model.Staff;
 import lombok.RequiredArgsConstructor;
@@ -24,9 +26,14 @@ public class StaffServiceImpl implements StaffService {
 
 
     @Override
-    public void recordStaff(Staff staff) throws UnknownCountryException, UnknownStoreException {
+    public void recordStaff(Staff staff) throws UnknownCountryException, UnknownStoreException, UnknownAddressException {
         staffDao.createStaff(staff);
     }
+    @Override
+    public void updateStaff(Staff staff) throws UnknownAddressException, UnknownStaffException, UnknownStoreException {
+        staffDao.updateStaff(staff);
+    }
+
 /*
     @Override
     public void deleteStaff(Staff staff)  {

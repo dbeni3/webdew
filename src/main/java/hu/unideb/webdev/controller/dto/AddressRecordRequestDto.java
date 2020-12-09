@@ -13,4 +13,5 @@ public class AddressRecordRequestDto extends AddressDto{
 
     private String phone;
     private String postalCode;
+    private int addressId;
 }

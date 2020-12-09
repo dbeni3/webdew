@@ -10,7 +10,7 @@ import lombok.ToString;
 @Getter
 @EqualsAndHashCode
 public class City {
-
+    private int cityId;
     private String name;
     private String country;
 

@@ -17,6 +17,6 @@ public class StaffDto {
     private String email;
     private String username;
     private String password;
-    private String active;
+    private int active;
 }
 

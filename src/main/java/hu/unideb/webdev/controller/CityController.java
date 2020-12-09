@@ -38,6 +38,7 @@ public class CityController {
     @PostMapping("/city")
     public void record(@RequestBody CityDto requestDto) {
         service.recordCity(new City(
+                requestDto.getCityId(),
                 requestDto.getName(),
                 requestDto.getCountry()
         ));
@@ -46,8 +47,21 @@ public class CityController {
     @DeleteMapping("/city")
     public void deleteCity(@RequestBody CityDto cityDto) throws UnknownCityException {
         service.deleteCity(new City(
+                cityDto.getCityId(),
                 cityDto.getName(),
                 cityDto.getCountry()
         ));
+    }
+    @PutMapping("/city")
+    public void updateCity(@RequestBody CityDto cityDto) {
+        try {
+            service.updateCity(new City(
+                    cityDto.getCityId(),
+                    cityDto.getName(),
+                    cityDto.getCountry()
+            ));
+        } catch (UnknownCountryException | UnknownCityException e) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, e.getMessage());
+        }
     }
 }

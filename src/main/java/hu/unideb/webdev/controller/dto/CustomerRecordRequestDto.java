@@ -10,7 +10,7 @@ import lombok.experimental.SuperBuilder;
 @NoArgsConstructor
 @AllArgsConstructor
 public class CustomerRecordRequestDto extends CustomerDto{
-
+    private int customerId;
     private int storeId;
     private String city;
     private String country;

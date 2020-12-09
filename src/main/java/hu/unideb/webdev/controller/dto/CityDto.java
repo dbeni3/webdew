@@ -10,7 +10,7 @@ import lombok.experimental.SuperBuilder;
 @NoArgsConstructor
 @AllArgsConstructor
 public class CityDto {
-
+    private int cityId;
     private String name;
     private String country;
 }

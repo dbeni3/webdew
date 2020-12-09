@@ -20,6 +20,6 @@ public interface AddressDao {
     Collection<Address> getAddressByAddress(String address);
     void createAddress(Address address) throws UnknownCountryException;
     Collection<Address> readAll();
-
+    void updateAddress(Address address) throws UnknownAddressException, UnknownCountryException;
     void deleteAddress(Address address) throws UnknownAddressException;
 }

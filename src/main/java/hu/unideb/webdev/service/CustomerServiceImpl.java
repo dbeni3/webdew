@@ -2,6 +2,7 @@ package hu.unideb.webdev.service;
 
 import hu.unideb.webdev.dao.CustomerDao;
 import hu.unideb.webdev.exceptions.UnknownCountryException;
+import hu.unideb.webdev.exceptions.UnknownCustomerException;
 import hu.unideb.webdev.exceptions.UnknownStoreException;
 import hu.unideb.webdev.model.Customer;
 import lombok.RequiredArgsConstructor;
@@ -30,7 +31,12 @@ public class CustomerServiceImpl implements CustomerService {
     }
 
     @Override
-    public void deleteCustomer(Customer customer)  {
+    public void deleteCustomer(Customer customer) throws UnknownCustomerException {
         customerDao.deleteCustomer(customer);
+    }
+
+    @Override
+    public void updateCustomer(Customer customer) throws UnknownCustomerException, UnknownCountryException, UnknownStoreException {
+        customerDao.updateCustomer(customer);
     }
 }

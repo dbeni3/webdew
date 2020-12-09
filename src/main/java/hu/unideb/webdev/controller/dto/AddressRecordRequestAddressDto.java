@@ -9,6 +9,6 @@ import lombok.experimental.SuperBuilder;
 @SuperBuilder
 @NoArgsConstructor
 @AllArgsConstructor
-public class AddressRecordRequestAddressDto {
-    String address;
+public class AddressRecordRequestAddressDto extends AddressDto {
+    int addressId;
 }

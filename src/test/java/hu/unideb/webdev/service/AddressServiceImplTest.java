@@ -72,7 +72,8 @@ class AddressServiceImplTest {
                 "UnknownCity",
                 "Algeria_1234",
                 "postalCode",
-                "phone"
+                "phone",
+                1
         );
     }
 
@@ -85,7 +86,8 @@ class AddressServiceImplTest {
                         "Atlantis",
                         "Greece",
                         "postalCode",
-                        "phone"
+                        "phone",
+                        1
                 ),
                 new Address(
                         "address10",
@@ -94,7 +96,8 @@ class AddressServiceImplTest {
                         "Atlantis",
                         "Greece",
                         "postalCode",
-                        "phone"
+                        "phone",
+                        1
                 ),
                 new Address(
                         "address1",
@@ -103,7 +106,8 @@ class AddressServiceImplTest {
                         "Debrecen",
                         "Hungary",
                         "postalCode",
-                        "phone"
+                        "phone",
+                        1
                 ));
     }
 }

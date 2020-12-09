@@ -1,6 +1,10 @@
 package hu.unideb.webdev.dao;
 
+import hu.unideb.webdev.dao.entity.CityEntity;
 import hu.unideb.webdev.dao.entity.CountryEntity;
+import hu.unideb.webdev.exceptions.UnknownCityException;
+import hu.unideb.webdev.exceptions.UnknownCountryException;
+import hu.unideb.webdev.model.City;
 import hu.unideb.webdev.model.Country;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -40,6 +44,7 @@ public class CountryDaoImpl implements CountryDao {
     public Collection<Country> readAll() {
         return StreamSupport.stream(countryRepository.findAll().spliterator(),false)
                 .map(entity -> new Country(
+                        entity.getId(),
                         entity.getName()
                 ))
                 .collect(Collectors.toList());
@@ -60,5 +65,20 @@ public class CountryDaoImpl implements CountryDao {
             }
         }
         countryRepository.delete(countryEntity.get());
+    }
+    @Override
+    public void updateCountry(Country country) throws  UnknownCountryException {
+        Optional<CountryEntity> countryEntity=countryRepository.findById(country.getCountryId());
+        if (!countryEntity.isPresent()){
+            throw new UnknownCountryException(String.format("Country Not Found %s",country), country);
+        }
+
+        if (!country.getName().equals("string")){
+            countryEntity.get().setName(country.getName());
+        }
+
+        countryEntity.get().setLastUpdate(new Timestamp((new Date()).getTime()));
+
+        countryRepository.save(countryEntity.get());
     }
 }

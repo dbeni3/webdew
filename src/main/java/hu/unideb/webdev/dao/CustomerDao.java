@@ -1,6 +1,7 @@
 package hu.unideb.webdev.dao;
 
 import hu.unideb.webdev.exceptions.UnknownCountryException;
+import hu.unideb.webdev.exceptions.UnknownCustomerException;
 import hu.unideb.webdev.exceptions.UnknownStoreException;
 import hu.unideb.webdev.model.Customer;
 
@@ -21,6 +22,6 @@ public interface CustomerDao {
 
     void createCustomer(Customer customer) throws UnknownStoreException, UnknownCountryException;
     Collection<Customer> readAll();
-
-    void deleteCustomer(Customer customer) ;
+    void updateCustomer(Customer customer) throws UnknownCustomerException, UnknownCountryException, UnknownStoreException;
+    void deleteCustomer(Customer customer) throws UnknownCustomerException;
 }

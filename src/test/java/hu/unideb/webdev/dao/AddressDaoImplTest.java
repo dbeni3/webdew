@@ -49,7 +49,8 @@ class AddressDaoImplTest {
                 "UnknownCity",
                 "Algeria_1234",
                 "postalCode",
-                "phone"
+                "phone",
+                1
         );
     }
 }

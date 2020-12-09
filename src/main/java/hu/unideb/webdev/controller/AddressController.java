@@ -25,20 +25,20 @@ public class AddressController {
     private final AddressService service;
 
     @GetMapping("/address")
-    public Collection<AddressDto> listAddresses(){
+    public Collection<AddressDto> listAddresses() {
         return service.getAllAddress()
                 .stream()
                 .map(model -> AddressDto.builder()
-                    .address(model.getAddress())
-                    .address2(model.getAddress2())
-                    .district(model.getDistrict())
-                    .city(model.getCity())
-                    .country(model.getCountry())
-                    .build())
+                        .address(model.getAddress())
+                        .address2(model.getAddress2())
+                        .district(model.getDistrict())
+                        .city(model.getCity())
+                        .country(model.getCountry())
+                        .build())
                 .collect(Collectors.toList());
     }
 
-    @GetMapping("/addressByAddress")
+    /*@GetMapping("/addressByAddress")
     public Collection<AddressDto> listAddressesByAddress(@RequestBody AddressRecordRequestAddressDto requestDto){
         return service.getAddressByAddress(requestDto.getAddress())
                 .stream()
@@ -50,7 +50,7 @@ public class AddressController {
                         .country(model.getCountry())
                         .build())
                 .collect(Collectors.toList());
-    }
+    }*/
 
 
     @PostMapping("/address")
@@ -63,14 +63,16 @@ public class AddressController {
                     requestDto.getCity(),
                     requestDto.getCountry(),
                     requestDto.getPostalCode(),
-                    requestDto.getPhone()
+                    requestDto.getPhone(),
+                    requestDto.getAddressId()
             ));
         } catch (UnknownCountryException e) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, e.getMessage());
         }
     }
+
     @DeleteMapping("/address")
-    public void deleteAddress(@RequestBody AddressRecordRequestDto requestDto){
+    public void deleteAddress(@RequestBody AddressRecordRequestDto requestDto) {
         try {
             service.deleteAddress(new Address(
                     requestDto.getAddress(),
@@ -79,9 +81,28 @@ public class AddressController {
                     requestDto.getCity(),
                     requestDto.getCountry(),
                     requestDto.getPostalCode(),
-                    requestDto.getPhone()
+                    requestDto.getPhone(),
+                    requestDto.getAddressId()
             ));
         } catch (UnknownAddressException e) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, e.getMessage());
+        }
+    }
+
+    @PutMapping("/address")
+    public void updateAddress(@RequestBody AddressRecordRequestDto requestDto) {
+        try {
+            service.updateAddress(new Address(
+                    requestDto.getAddress(),
+                    requestDto.getAddress2(),
+                    requestDto.getDistrict(),
+                    requestDto.getCity(),
+                    requestDto.getCountry(),
+                    requestDto.getPostalCode(),
+                    requestDto.getPhone(),
+                    requestDto.getAddressId()
+            ));
+        } catch (UnknownAddressException | UnknownCountryException e) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, e.getMessage());
         }
     }

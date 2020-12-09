@@ -11,8 +11,6 @@ import java.util.Set;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-@ToString
-@JsonIdentityInfo(generator = ObjectIdGenerators.UUIDGenerator.class)
 @Entity
 @Table(name = "staff", schema = "sakila")
 public class StaffEntity {
@@ -39,13 +37,14 @@ public class StaffEntity {
     private String email;
 
 
-
-    @OneToOne(cascade = CascadeType.ALL,fetch = FetchType.LAZY,targetEntity = StoreEntity.class)
+    @JsonManagedReference
+    @OneToOne(cascade = CascadeType.ALL,fetch = FetchType.EAGER,
+            targetEntity = StoreEntity.class,optional = false)
     @JoinColumn(name ="store_id")
     private StoreEntity store;
 
     @Column(name ="active")
-    private String active;
+    private int active;
 
     @Column(name ="username")
     private String userName;

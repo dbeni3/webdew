@@ -11,11 +11,16 @@ import lombok.ToString;
 @Getter
 @EqualsAndHashCode
 public class Store {
-    private String managerFirstName;
-    private String managerLastName;
-    private int addressId;
+    private int soreId;
     private String address;
-    private int managerAddressId;
-    private String managerUserName;
-    private String managerPassWord;
+    private String staffFirstName;
+    private String staffLastName;
+    private String staffAddress;
+    private String staffEmail;
+    private String staffUsername;
+    private String staffPassword;
+    private int staffActive;
+    private int staffAddressId;
+    private int storeAddressId;
+
 }

@@ -1,10 +1,11 @@
 package hu.unideb.webdev.controller;
 
-import hu.unideb.webdev.controller.dto.AddressDto;
-import hu.unideb.webdev.controller.dto.AddressRecordRequestDto;
+
+import hu.unideb.webdev.controller.dto.CityDto;
 import hu.unideb.webdev.controller.dto.CountryDto;
+import hu.unideb.webdev.exceptions.UnknownCityException;
 import hu.unideb.webdev.exceptions.UnknownCountryException;
-import hu.unideb.webdev.model.Address;
+import hu.unideb.webdev.model.City;
 import hu.unideb.webdev.model.Country;
 import hu.unideb.webdev.service.CountryService;
 import lombok.RequiredArgsConstructor;
@@ -27,6 +28,7 @@ public class CountryController {
         return service.getAllCountry()
                 .stream()
                 .map(model -> CountryDto.builder()
+                        .countryId(model.getCountryId())
                         .name(model.getName())
                         .build())
                 .collect(Collectors.toList());
@@ -35,12 +37,26 @@ public class CountryController {
 
     @PostMapping("/country")
     public void record(@RequestBody CountryDto dto) {
-        service.recordCountry(new Country(dto.getName()));
+        service.recordCountry(new Country(
+                dto.getCountryId(),
+                dto.getName()));
     }
 
-    @DeleteMapping
-    public void deleteCity(@RequestBody CountryDto countryDto){
-        service.deleteCountry(new Country(countryDto.getName()));
+    @DeleteMapping("/country")
+    public void deleteCountry(@RequestBody CountryDto countryDto){
+        service.deleteCountry(new Country(countryDto.getCountryId(),
+                countryDto.getName()));
+    }
+    @PutMapping("/country")
+    public void updateCountry(@RequestBody CountryDto countryDto) {
+        try {
+            service.updateCountry(new Country(
+                    countryDto.getCountryId(),
+                    countryDto.getName()
+            ));
+        } catch (UnknownCountryException  e) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, e.getMessage());
+        }
     }
 
 

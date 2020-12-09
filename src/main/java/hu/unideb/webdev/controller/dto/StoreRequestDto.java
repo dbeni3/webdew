@@ -9,12 +9,17 @@ import lombok.experimental.SuperBuilder;
 @SuperBuilder
 @NoArgsConstructor
 @AllArgsConstructor
-public class StoreRequestDto {
-   private String managerFirstName;
-   private String managerLastName;
-   private int addressId;
-   private String address;
-   private int managerAddressId;
-   private String managerUserName;
-   private String managerPassWord;
+public class StoreRequestDto extends StoreDto {
+   private int storeId;
+
+   private String staffFirstName;
+   private String staffLastName;
+   private String staffAddress;
+   private String staffEmail;
+   private String staffUsername;
+   private String staffPassword;
+   private int staffActive;
+   private int staffAddressId;
+   private int storeAddressId;
+
 }

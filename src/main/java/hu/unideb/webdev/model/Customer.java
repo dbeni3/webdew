@@ -12,7 +12,7 @@ import static java.lang.Integer.parseInt;
 @Getter
 @EqualsAndHashCode
 public class Customer {
-
+    private int customerId;
     private String firstName;
     private String LastName;
     private String email;

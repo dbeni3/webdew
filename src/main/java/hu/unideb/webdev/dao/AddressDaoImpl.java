@@ -84,7 +84,8 @@ public class AddressDaoImpl implements AddressDao{
                         entity.getCity().getName(),
                         entity.getCity().getCountry().getName(),
                         entity.getPostalCode(),
-                        entity.getPhone()
+                        entity.getPhone(),
+                        entity.getId()
                 ))
                 .collect(Collectors.toList());
     }
@@ -98,7 +99,8 @@ public class AddressDaoImpl implements AddressDao{
                         entity.getCity().getName(),
                         entity.getCity().getCountry().getName(),
                         entity.getPostalCode(),
-                        entity.getPhone()
+                        entity.getPhone(),
+                        entity.getId()
                 ))
                 .collect(Collectors.toList());
     }
@@ -119,6 +121,36 @@ public class AddressDaoImpl implements AddressDao{
             throw new UnknownAddressException(String.format("Address Not Found %s",address), address);
         }
         addressRepository.delete(addressEntity.get());
+    }
+
+    @Override
+    public void updateAddress(Address address) throws UnknownAddressException, UnknownCountryException {
+        Optional<AddressEntity> addressEntity=addressRepository.findById(address.getAddressId());
+        if (!addressEntity.isPresent()){
+            throw new UnknownAddressException(String.format("Address Not Found %s",address), address);
+        }
+        log.info(address.getAddress());
+        if (!address.getAddress().equals("string")){
+            addressEntity.get().setAddress(address.getAddress());
+        }
+        if (!address.getAddress2().equals("string")){
+            addressEntity.get().setAddress2(address.getAddress2());
+        }
+        if (!address.getDistrict().equals("string")){
+            addressEntity.get().setDistrict(address.getDistrict());
+        }
+        if (!address.getCity().equals("string") && address.getCountry()!="string"){
+            addressEntity.get().setCity(queryCity(address.getCity(), address.getCountry()));
+        }
+        if (!address.getPostalCode().equals("string")){
+            addressEntity.get().setPostalCode(address.getPostalCode());
+        }
+        if (!address.getPhone().equals("string")){
+            addressEntity.get().setPhone(address.getPhone());
+        }
+        addressEntity.get().setLastUpdate(new Timestamp((new Date()).getTime()));
+
+        addressRepository.save(addressEntity.get());
     }
 
 

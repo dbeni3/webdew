@@ -20,8 +20,8 @@ public class CustomerEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "customer_id")
     private int id;
-
-    @ManyToOne(cascade = CascadeType.REMOVE,fetch = FetchType.LAZY)
+    
+    @ManyToOne(cascade = CascadeType.ALL,fetch = FetchType.LAZY)
     @JoinColumn(name="store_id")
     private StoreEntity store;
 

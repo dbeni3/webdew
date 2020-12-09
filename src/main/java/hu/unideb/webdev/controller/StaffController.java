@@ -1,22 +1,19 @@
 package hu.unideb.webdev.controller;
 
-import hu.unideb.webdev.controller.dto.CustomerDto;
 import hu.unideb.webdev.controller.dto.CustomerRecordRequestDto;
 import hu.unideb.webdev.controller.dto.StaffDto;
 import hu.unideb.webdev.controller.dto.StaffRecordRequestDto;
-import hu.unideb.webdev.exceptions.UnknownCountryException;
-import hu.unideb.webdev.exceptions.UnknownStoreException;
+import hu.unideb.webdev.exceptions.*;
 import hu.unideb.webdev.model.Customer;
 import hu.unideb.webdev.model.Staff;
 import hu.unideb.webdev.service.StaffService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.http.HttpStatus;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.server.ResponseStatusException;
 
-import java.util.List;
+import java.util.Collection;
 import java.util.stream.Collectors;
 
 @Slf4j
@@ -26,8 +23,10 @@ public class StaffController {
 
     private final StaffService service;
 
+
+
     @GetMapping("/staff")
-    public List<?> listStaffs(){
+    public Collection<StaffDto> listStaffs(){
         return service.getAllStaff()
                 .stream()
                 .map(model -> StaffDto.builder()
@@ -41,9 +40,13 @@ public class StaffController {
                         .build())
                 .collect(Collectors.toList());
     }
+
     @PostMapping("/staff")
-    public void record(@RequestBody StaffRecordRequestDto requestDto) throws UnknownCountryException, UnknownStoreException {
+    public void record(@RequestBody StaffRecordRequestDto requestDto)  {
+        try{
         service.recordStaff(new Staff(
+                requestDto.getStoreId(),
+                requestDto.getStaffId(),
                 requestDto.getFirstName(),
                 requestDto.getLastName(),
                 requestDto.getAddress(),
@@ -51,9 +54,32 @@ public class StaffController {
                 requestDto.getUsername(),
                 requestDto.getPassword(),
                 requestDto.getActive(),
-                requestDto.getCity(),
-                requestDto.getCountry(),
-                requestDto.getStoreId()
+                requestDto.getStaffAddressId(),
+                requestDto.getStoreAddressId()
         ));
+        } catch (UnknownCountryException | UnknownStoreException | UnknownAddressException e) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, e.getMessage());
+        }
     }
+    /*@PutMapping("/staff")
+    public void updateStaff(@RequestBody StaffRecordRequestDto requestDto)  {
+        try {
+
+        service.updateStaff(new Staff(
+                requestDto.getStoreId(),
+                requestDto.getStaffId(),
+                requestDto.getFirstName(),
+                requestDto.getLastName(),
+                requestDto.getAddress(),
+                requestDto.getEmail(),
+                requestDto.getUsername(),
+                requestDto.getPassword(),
+                requestDto.getActive(),
+                requestDto.getStaffAddressId(),
+                requestDto.getStoreAddressId()
+        ));
+        } catch ( UnknownStoreException | UnknownAddressException | UnknownStaffException e) {
+            e.printStackTrace();
+        }
+    }*/
 }

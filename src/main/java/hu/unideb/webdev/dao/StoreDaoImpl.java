@@ -27,13 +27,17 @@ public class StoreDaoImpl implements StoreDao{
     public Collection<Store> readAll() {
         return StreamSupport.stream(storeRepository.findAll().spliterator(),false)
                 .map(entity -> new Store(
+                        entity.getId(),
+                        entity.getAddress().getAddress(),
                         entity.getStaff().getFirstName(),
                         entity.getStaff().getLastName(),
-                        entity.getAddress().getId(),
-                        entity.getAddress().getAddress(),
-                        entity.getStaff().getAddress().getId(),
+                        entity.getStaff().getAddress().getAddress(),
+                        entity.getStaff().getEmail(),
                         entity.getStaff().getUserName(),
-                        entity.getStaff().getPassWord()
+                        entity.getStaff().getPassWord(),
+                        entity.getStaff().getActive(),
+                        entity.getStaff().getAddress().getId(),
+                        entity.getAddress().getId()
 
                 ))
                 .collect(Collectors.toList());
@@ -42,21 +46,35 @@ public class StoreDaoImpl implements StoreDao{
 
     @Override
     public void createStore(Store store) throws UnknownStaffException, UnknownAddressException {
-        StoreEntity storeEntity;
+        StoreEntity storeEntity=createStore(store.getStoreAddressId());;
 
-        storeEntity = StoreEntity.builder()
-                .staff(queryStaff(store.getManagerFirstName(),store.getManagerLastName(),
-                        store.getAddressId(),store.getManagerUserName(),store.getManagerPassWord()))
-                .address(queryAddress(store.getAddressId()))
+        StaffEntity staffEntity;
+        staffEntity = StaffEntity.builder()
+                .firstName(store.getStaffFirstName())
+                .lastName(store.getStaffLastName())
+                .address(queryAddress(store.getStaffAddressId()))
+                .email(store.getStaffEmail())
+                .active(store.getStaffActive())
+                .userName(store.getStaffUsername())
+                .passWord(store.getStaffPassword())
                 .lastUpdate(new Timestamp((new Date()).getTime()))
                 .build();
-        log.info("StaffEntity: {}", storeEntity);
+        storeEntity.setStaff(staffEntity);
+
+        staffEntity.setStore(storeEntity);
         try {
             storeRepository.save(storeEntity);
         }
         catch(Exception e){
             log.error(e.getMessage());
         }
+        try {
+            staffRepository.save(staffEntity);
+        }
+        catch(Exception e){
+            log.error(e.getMessage());
+        }
+
     }
 
     protected AddressEntity queryAddress(int addressId) throws  UnknownAddressException {
@@ -68,25 +86,13 @@ public class StoreDaoImpl implements StoreDao{
         return addressEntity.get();
 
     }
+    protected StoreEntity createStore(int storeAddressId) throws UnknownAddressException {
+        StoreEntity storeEntity=new StoreEntity();
+        storeEntity.setAddress(queryAddress(storeAddressId));
+        storeEntity.setLastUpdate(new Timestamp((new Date()).getTime()));
 
-    protected StaffEntity queryStaff(String firstName,String lastName,
-                                     int addressId,String username,
-                                     String passWord) throws UnknownStaffException, UnknownAddressException {
 
-        StaffEntity staffEntity = StaffEntity.builder()
-                .firstName(firstName)
-                .lastName(lastName)
-                .address(queryAddress(addressId))
-                .email("")
-                .store(new StoreEntity())
-                .active("1")
-                .userName(username)
-                .passWord(passWord)
-                .lastUpdate(new Timestamp((new Date()).getTime()))
-                .build();
-        staffEntity.getStore().setId(11);
-        staffRepository.save(staffEntity);
-        return staffEntity;
-
+        return storeEntity;
     }
+
 }

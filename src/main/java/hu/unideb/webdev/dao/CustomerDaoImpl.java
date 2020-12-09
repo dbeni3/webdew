@@ -1,14 +1,18 @@
 package hu.unideb.webdev.dao;
 
 import hu.unideb.webdev.dao.entity.*;
+import hu.unideb.webdev.exceptions.UnknownAddressException;
 import hu.unideb.webdev.exceptions.UnknownCountryException;
+import hu.unideb.webdev.exceptions.UnknownCustomerException;
 import hu.unideb.webdev.exceptions.UnknownStoreException;
 import hu.unideb.webdev.model.Address;
 import hu.unideb.webdev.model.Customer;
-import hu.unideb.webdev.model.Store;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import lombok.RequiredArgsConstructor;
+
+import javax.persistence.EntityManager;
+import javax.swing.text.html.parser.Entity;
 import java.sql.Timestamp;
 import java.util.Collection;
 import java.util.Date;
@@ -16,18 +20,15 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 
-import static java.lang.Integer.parseInt;
-
 @Service
 @Slf4j
 @RequiredArgsConstructor
 public class CustomerDaoImpl implements CustomerDao{
     private final CustomerRepository customerRepository;
-    private final StoreRepository storeRepository;
     private final AddressRepository addressRepository;
     private final CityRepository cityRepository;
     private final CountryRepository countryRepository;
-
+    private final EntityManager entityManager;
     
     @Override
     public void createCustomer(Customer customer) throws UnknownStoreException, UnknownCountryException {
@@ -52,15 +53,12 @@ public class CustomerDaoImpl implements CustomerDao{
         }
     }
 
-
     protected StoreEntity queryStore(int storeId) throws UnknownStoreException {
-        Optional<StoreEntity> storeEntity= storeRepository.findById(storeId).stream()
-                .findFirst();
-        if (!storeEntity.isPresent()){
-            throw new UnknownStoreException(""+storeId);
+        if (storeId<1){
+            throw new UnknownStoreException("Store must be greater than 0");
         }
-
-        return storeEntity.get();
+        StoreEntity storeEntity = entityManager.find(StoreEntity.class,storeId);
+        return storeEntity;
     }
 
     protected CityEntity queryCity(String city, String country) throws UnknownCountryException {
@@ -104,20 +102,13 @@ public class CustomerDaoImpl implements CustomerDao{
 
         return addressEntity.get();
     }
-    
-    
-    
-    
-    /*
-    @Override
-    public void createCustomer(Customer customer){
 
-    }*/
 
     @Override
     public Collection<Customer> readAll() {
         return StreamSupport.stream(customerRepository.findAll().spliterator(),false)
                 .map(entity -> new Customer(
+                        entity.getId(),
                         entity.getFirstName(),
                         entity.getLastName(),
                         entity.getEmail(),
@@ -132,7 +123,7 @@ public class CustomerDaoImpl implements CustomerDao{
 
 
     @Override
-    public void deleteCustomer(Customer customer)  {
+    public void deleteCustomer(Customer customer) throws UnknownCustomerException {
         Optional<CustomerEntity> customerEntity = StreamSupport.stream(customerRepository.findAll().spliterator(),false).filter(
                 entity ->{
                     return  customer.getFirstName().equals(entity.getFirstName()) &&
@@ -143,12 +134,38 @@ public class CustomerDaoImpl implements CustomerDao{
                 }
         ).findAny();
         if(!customerEntity.isPresent()){
-            try {
-                throw new Exception();
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
+            throw new UnknownCustomerException(String.format("Customer Not Found %s",customer), customer);
         }
         customerRepository.delete(customerEntity.get());
+    }
+    @Override
+    public void updateCustomer(Customer customer) throws UnknownCustomerException, UnknownCountryException, UnknownStoreException {
+        Optional<CustomerEntity> customerEntity=customerRepository.findById(customer.getCustomerId());
+        if (!customerEntity.isPresent()){
+            throw new UnknownCustomerException(String.format("Customer Not Found %s",customer), customer);
+        }
+
+        if (!customer.getFirstName().equals("string")){
+            customerEntity.get().setFirstName(customer.getFirstName());
+        }
+        if (!customer.getLastName().equals("string")){
+            customerEntity.get().setLastName(customer.getLastName());
+        }
+        if (!customer.getEmail().equals("string")){
+            customerEntity.get().setEmail(customer.getEmail());
+        }
+        //
+        if (!customer.getCity().equals("string") && !customer.getCountry().equals("string")
+                && !customer.getAddress().equals("string")){
+            customerEntity.get().setAddress(queryAddress(customer.getAddress(),queryCity(customer.getCity(),customer.getCountry())));
+        }
+
+        if (customer.getStoreId()!=customerEntity.get().getStore().getId()){
+            customerEntity.get().setStore(queryStore(customer.getStoreId()));
+        }
+
+        customerEntity.get().setLastUpdate(new Timestamp((new Date()).getTime()));
+
+        customerRepository.save(customerEntity.get());
     }
 }

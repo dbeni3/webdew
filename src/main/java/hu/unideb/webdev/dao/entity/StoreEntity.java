@@ -11,8 +11,6 @@ import java.sql.Timestamp;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-@ToString
-@JsonIdentityInfo(generator = ObjectIdGenerators.UUIDGenerator.class)
 @Entity
 @Table(name = "store", schema = "sakila")
 public class StoreEntity {
@@ -25,16 +23,26 @@ public class StoreEntity {
     @JoinColumn(name ="address_id")
     private AddressEntity address;
 
-    //@JsonIgnore
-    @OneToOne(cascade = CascadeType.ALL,targetEntity = StaffEntity.class,mappedBy = "store",fetch = FetchType.LAZY)
-    @JoinColumn(name = "staff_id")
+    @JsonBackReference
+    @OneToOne(cascade = CascadeType.ALL,targetEntity = StaffEntity.class,
+            mappedBy = "store",fetch = FetchType.EAGER)
 
     private StaffEntity staff;
 
     @Column(name ="last_update")
     private Timestamp lastUpdate;
 
-
+    public void setStaff(StaffEntity staff) {
+        if (staff == null) {
+            if (this.staff != null) {
+                this.staff.setStore(null);
+            }
+        }
+        else {
+            staff.setStore(this);
+        }
+        this.staff = staff;
+    }
 
 
 }

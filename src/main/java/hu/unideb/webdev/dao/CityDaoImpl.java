@@ -5,6 +5,7 @@ import hu.unideb.webdev.dao.entity.AddressEntity;
 import hu.unideb.webdev.dao.entity.CityEntity;
 import hu.unideb.webdev.exceptions.UnknownAddressException;
 import hu.unideb.webdev.exceptions.UnknownCityException;
+import hu.unideb.webdev.exceptions.UnknownCountryException;
 import hu.unideb.webdev.model.Address;
 import hu.unideb.webdev.model.City;
 import lombok.RequiredArgsConstructor;
@@ -48,6 +49,7 @@ public class CityDaoImpl implements CityDao {
     public Collection<City> readAll() {
         return StreamSupport.stream(cityRepository.findAll().spliterator(), false)
                 .map(entity -> new City(
+                        entity.getId(),
                         entity.getName(),
                         entity.getCountry().getName()
                 ))
@@ -71,4 +73,23 @@ public class CityDaoImpl implements CityDao {
 
         cityRepository.delete(cityEntity.get());
     }
+    @Override
+    public void updateCity(City city) throws UnknownCountryException, UnknownCityException {
+        Optional<CityEntity> cityEntity=cityRepository.findById(city.getCityId());
+        if (!cityEntity.isPresent()){
+            throw new UnknownCityException(String.format("City Not Found %s",city), city);
+        }
+
+        if (!city.getName().equals("string")){
+            cityEntity.get().setName(city.getName());
+        }
+        if (!city.getCountry().equals("string")){
+            cityEntity.get().setCountry(countryRepository.findByName(city.getCountry()));
+        }
+
+        cityEntity.get().setLastUpdate(new Timestamp((new Date()).getTime()));
+
+        cityRepository.save(cityEntity.get());
+    }
+
 }
